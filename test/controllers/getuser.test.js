@@ -11,11 +11,25 @@ describe('users.get', function() {
 	});
 
   it("should try to find user by id", function (done) {
-    sinon.stub(doorserver.repositories.userRepository, 'findUserById', function(id, logger, cb) {
+    var findUserById = sinon.stub(doorserver.repositories.userRepository, 'findUserById', function(id, logger, cb) {
       cb(null, new doorserver.models.User({_id: 'existing_id'}));
     });
 
-    done("not implemented");
+    var req = {
+      params : {
+        id : 123
+      }
+    };
+
+    var res = {
+      jsonp : function(response) {
+        assert.ok(findUserById.called);
+        findUserById.restore();
+        done();
+      }
+    };
+
+    doorserver.controllers.getuser(req, res);
   });
 
 });
