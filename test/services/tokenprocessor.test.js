@@ -20,7 +20,7 @@ describe('rfid', function () {
       });
 
 
-      doorserver.services.rfid.onRFIDTokenRead("mytoken", function () {
+      doorserver.services.tokenProcessor.onTokenRead("mytoken", function () {
         assert.ok(findUserByToken.called);
         assert.ok(openDoorForAMoment.called, "openDoorForAMoment was not called");
         assert.ok(isUserAllowedToOpenDoor.called, "isUserAllowedToOpenDoor was not called");
@@ -46,7 +46,7 @@ describe('rfid', function () {
       });
 
 
-      doorserver.services.rfid.onRFIDTokenRead("mytoken", function () {
+      doorserver.services.tokenProcessor.onTokenRead("mytoken", function () {
         assert.ok(findUserByToken.called);
         assert.equal(false, openDoorForAMoment.called, "openDoorForAMoment was called, but user was not allowed");
         assert.ok(isUserAllowedToOpenDoor.called, "isUserAllowedToOpenDoor was not called");
