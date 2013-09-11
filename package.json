@@ -4,12 +4,15 @@
 	"author": "Juho Mäkinen <juho.makinen@gmail.com>",
 	"dependencies": {
 		"express": "3.4.x",
-		"mysql" : "0.9.x"
+		"mysql" : "0.9.x",
+		"restify" : "2.6.x",
+		"async" : "0.2.x"
 	},
 	"devDependencies": {
 		"mocha": "1.12.x",
 		"jshint" : "2.1.10",
-		"sinon" : "1.7.3"
+		"sinon" : "1.7.3",
+		"restler" : "0.2.2"
  	},
 	"engine": "node >= 0.10.0"
 }

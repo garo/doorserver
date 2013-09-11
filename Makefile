@@ -1,4 +1,7 @@
 REPORTER = spec
+MYSQL_USER=doorserver
+MYSQL_PASSWORD=doorserver
+MYSQL_DATABADSE=doorserver_test
 
 ###
 # Testing
@@ -11,7 +14,7 @@ JSHINT_CONFIG = .jshintrc
 
 # to run a single test:
 # make test UNIT_TESTS=test/..
-test-unit: jshint
+test-unit: jshint setup-test-data
 	@./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		-t 8000 \
@@ -41,3 +44,11 @@ clean:
 clean-all: clean
 	rm -rf node_modules
 
+
+###
+# Test data
+###
+setup-test-data:
+	@mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) $(MYSQL_DATABASE) < testdata.sql
+
+.PHONY: setup-test-data

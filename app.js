@@ -1,10 +1,6 @@
-var connect = require('connect');
-var express = require('express');
 
-var app = express.createServer();
+var doorserver = require('./lib/doorserver');
 
-// Setup routes
-app.get('/users', require('./controllers/users.get'));
-
-
-app.listen(8);
+doorserver.start(function (err) {
+  console.log("Doorserver started");
+});
