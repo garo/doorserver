@@ -21,6 +21,14 @@ describe('userrepository', function() {
         done();
       });
     });
+
+    it("should return null if user was disabled", function (done) {
+      doorserver.repositories.userRepository.findUserById(101, function (err, user) {
+        assert.ifError(err);
+        assert.equal(null, user);
+        done();
+      });
+    });
   });
 
   describe("findUserByToken", function() {
@@ -34,6 +42,14 @@ describe('userrepository', function() {
 
     it("should return null if user was not found", function (done) {
       doorserver.repositories.userRepository.findUserByToken("notfound", function (err, user) {
+        assert.ifError(err);
+        assert.equal(null, user);
+        done();
+      });
+    });
+
+    it("should return null if token was disabled", function (done) {
+      doorserver.repositories.userRepository.findUserByToken("disabled_token", function (err, user) {
         assert.ifError(err);
         assert.equal(null, user);
         done();
