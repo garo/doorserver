@@ -7,12 +7,14 @@ describe('rfid', function () {
   describe("onRFIDTokenRead", function () {
     it("should open door if user is allowed", function (done) {
 
+      var opened_door_id = null;
+
       var findUserByToken = sinon.stub(doorserver.repositories.userRepository, 'findUserByToken', function (token, cb) {
         cb(null, new doorserver.models.User({id:100, token:"mytoken"}));
       });
 
-      var openDoorForAMoment = sinon.stub(doorserver.services.door, 'openDoorForAMoment', function () {
-
+      var openDoorForAMoment = sinon.stub(doorserver.services.door, 'openDoorForAMoment', function (door_id) {
+        opened_door_id = door_id;
       });
 
       var isUserAllowedToOpenDoor = sinon.stub(doorserver.services.security, 'isUserAllowedToOpenDoor', function (user, door_id, cb) {
@@ -20,10 +22,11 @@ describe('rfid', function () {
       });
 
 
-      doorserver.services.tokenProcessor.onTokenRead("mytoken", function () {
+      doorserver.services.tokenProcessor.onTokenRead({token : "mytoken", door_id : 1002}, function () {
         assert.ok(findUserByToken.called);
         assert.ok(openDoorForAMoment.called, "openDoorForAMoment was not called");
         assert.ok(isUserAllowedToOpenDoor.called, "isUserAllowedToOpenDoor was not called");
+        assert.equal(opened_door_id, 1002);
         isUserAllowedToOpenDoor.restore();
         findUserByToken.restore();
         openDoorForAMoment.restore();
