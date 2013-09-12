@@ -10,7 +10,7 @@ describe('rfid', function () {
       var opened_door_id = null;
 
       var findUserByToken = sinon.stub(doorserver.repositories.userRepository, 'findUserByToken', function (token, cb) {
-        cb(null, new doorserver.models.User({id:100, token:"mytoken"}));
+        cb(null, new doorserver.models.User({id:100, token:"mytoken", name : "Mr Smith"}));
       });
 
       var openDoorForAMoment = sinon.stub(doorserver.services.door, 'openDoorForAMoment', function (door_id) {
@@ -19,6 +19,10 @@ describe('rfid', function () {
 
       var isUserAllowedToOpenDoor = sinon.stub(doorserver.services.security, 'isUserAllowedToOpenDoor', function (user, door_id, cb) {
         cb(null, true); // true means that user can open the door
+      });
+
+      var findDoorById = sinon.stub(doorserver.repositories.doorRepository, 'findDoorById', function (door_id, cb) {
+        cb(null, new doorserver.models.Door({id : 1000, doorname : "Istiksen Etuovi"}));
       });
 
 
@@ -30,6 +34,7 @@ describe('rfid', function () {
         isUserAllowedToOpenDoor.restore();
         findUserByToken.restore();
         openDoorForAMoment.restore();
+        findDoorById.restore();
         done();
       });
     });
