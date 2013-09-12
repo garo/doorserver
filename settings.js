@@ -16,6 +16,15 @@ settings.inputdrivers = [
 		}
 ];
 
+settings.doors = {
+		"1000" : {
+				relay_pin : 1,
+				buzzer_pin : 4,
+				door_open_time : 5000,
+				buzzer_time : 2000
+		}
+};
+
 exports.get = function(key) {
   return settings[key];
 };
