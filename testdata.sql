@@ -39,7 +39,7 @@ create table doorserver_users (
 
 insert into doorserver_users values(100, 'User owning token named "mytoken"', 1);
 insert into doorserver_users values(101, 'Disabled user with token \"disabled_token\"', 0);
-
+insert into doorserver_users values(102, 'Juho Mäkinen', 1);
 
 CREATE TABLE `doorserver_keys` (
   token varchar(16) not null primary key,
@@ -53,6 +53,7 @@ create unique index doorserver_keys_token on doorserver_keys (token);
 insert into doorserver_keys values('mytoken', 100, 1);
 insert into doorserver_keys values('anothertoken', 101, 0);
 insert into doorserver_keys values('disabled_token', 100, 0);
+insert into doorserver_keys values('0005123997', 102, 1);
 
 
 CREATE TABLE `doorserver_groups` (
@@ -73,6 +74,7 @@ CREATE TABLE doorserver_user_to_group (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 insert into doorserver_user_to_group values(1, 10, 100);
+insert into doorserver_user_to_group values(2, 10, 102);
 
 CREATE TABLE doorserver_doors (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
