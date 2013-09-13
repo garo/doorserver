@@ -83,6 +83,40 @@ describe('door service', function () {
         done();
       });
     });
+
+    it("should not close door if door is help temporarily open", function (done) {
+      var settings_get = sinon.stub(doorserver.settings, 'get', function (key) {
+        switch (key) {
+          case "doors":
+            return {
+              "1000":{
+                relay_pin:1,
+                buzzer_pin:4,
+                door_open_time:200,
+                buzzer_time:50
+              }
+
+            }
+        }
+      });
+
+      var piface_off = sinon.stub(doorserver.drivers.piface, 'off', function (pin) {
+        assert.equal(1, pin);
+      });
+
+      doorserver.services.door.doorTemporarilyOpen["1000"] = true;
+
+      doorserver.services.door.closeDoor(1000, function (err) {
+        assert.equal(false, piface_off.called);
+        assert.ok(settings_get.called);
+        assert.equal(doorserver.services.door.doorHoldState, doorserver.services.door.DOOR_CLOSED);
+        assert.equal(doorserver.services.door.doorTemporarilyOpen["1000"], true);
+        piface_off.restore();
+        settings_get.restore();
+        done();
+      });
+    });
+
   });
 
 
@@ -113,15 +147,28 @@ describe('door service', function () {
         });
       });
 
+      var door_id = 1000;
+
+
       var piface_on = sinon.stub(doorserver.drivers.piface, 'on', function (pin) {
         sequence.push(["on", pin]);
+
+        // Door should now be marked as temporarily open
+        if (pin === 1) {
+          assert.ok(doorserver.services.door.doorTemporarilyOpen[door_id]);
+        }
       });
 
       var piface_off = sinon.stub(doorserver.drivers.piface, 'off', function (pin) {
         sequence.push(["off", pin]);
+
+        // Door should no longer be marked as temporarily open
+        if (pin === 1) {
+          assert.equal(doorserver.services.door.doorTemporarilyOpen[door_id], undefined);
+        }
+
       });
 
-      var door_id = 1000;
       doorserver.services.door.openDoorForAMoment(door_id);
 
       setTimeout(function() {
