@@ -11,6 +11,7 @@ describe('door repository', function () {
         assert.equal(door.id, 1000);
         assert.equal(door.doorname, "Etuovi");
 
+        done();
       });
 
     });

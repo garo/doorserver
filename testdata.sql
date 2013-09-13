@@ -94,3 +94,23 @@ CREATE TABLE doorserver_door_to_group (
 CREATE UNIQUE INDEX doorserver_door_to_group_unique ON doorserver_door_to_group (groupid, doorid);
 
 INSERT INTO doorserver_door_to_group VALUES(1, 1000, 10);
+
+CREATE TABLE doorserver_timeperiods (
+  id int(11) AUTO_INCREMENT PRIMARY KEY,
+  name varchar(100) NOT NULL
+);
+
+INSERT INTO doorserver_timeperiods VALUES(10000, "Business hours");
+
+CREATE TABLE doorserver_timeperiod_rules (
+  id int(11) AUTO_INCREMENT PRIMARY KEY,
+  timeperiod_id int(11),
+  rule varchar(50) NOT NULL,
+  exclude int(1) default 0,
+  CONSTRAINT FOREIGN KEY (timeperiod_id) REFERENCES doorserver_timeperiods (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+INSERT INTO doorserver_timeperiod_rules VALUES(1, 10000, "1-5,08:00-18:00", 0);
+INSERT INTO doorserver_timeperiod_rules VALUES(2, 10000, "6-7,10:00-18:00", 0);
+INSERT INTO doorserver_timeperiod_rules VALUES(3, 10000, "24.12.", 1);
+

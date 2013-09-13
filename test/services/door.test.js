@@ -3,6 +3,7 @@ var sinon = require('sinon');
 var doorserver = require('../../lib/doorserver');
 
 describe('door service', function () {
+
   describe("openDoorForAMoment", function () {
 
     it("should open door according to settings", function (done) {
