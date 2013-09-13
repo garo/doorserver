@@ -5,15 +5,20 @@ var doorserver = require('../../lib/doorserver');
 describe('door service', function () {
 
   describe("isDoorOpen", function() {
-    it("should return DOOR_OPEN if doorHoldState is DOOR_OPEN", function() {
-      doorserver.services.door.doorHoldState = doorserver.services.door.DOOR_OPEN;
-      assert.equal(doorserver.services.door.DOOR_OPEN, doorserver.services.door.isDoorOpen());
+    it("should return true if doorHoldState is DOOR_OPEN per door", function() {
+      doorserver.services.door.doorHoldState[1000] = doorserver.services.door.DOOR_OPEN;
+      assert.equal(true, doorserver.services.door.isDoorOpen(1000));
     });
 
-    it("should return DOOR_CLOSED if doorHoldState is DOOR_CLOSED", function() {
-      doorserver.services.door.doorHoldState = doorserver.services.door.DOOR_CLOSED;
-      assert.equal(doorserver.services.door.DOOR_CLOSED, doorserver.services.door.isDoorOpen());
+    it("should return false if doorHoldState is DOOR_CLOSED per door", function() {
+      doorserver.services.door.doorHoldState[1000] = doorserver.services.door.DOOR_CLOSED;
+      assert.equal(false, doorserver.services.door.isDoorOpen(1000));
     });
+
+    it("should return false for unknown door", function() {
+      assert.equal(false, doorserver.services.door.isDoorOpen(1002));
+    });
+
   });
 
   describe("openDoor", function() {
