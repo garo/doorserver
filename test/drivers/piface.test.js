@@ -15,8 +15,11 @@ describe('piface', function () {
     piface.on(1);
     setTimeout(function () {
       piface.off(1);
+      piface.off(3);
+      piface.off(4);
+
       done();
-    }, 500);
+    }, 200);
 
     piface.on(3);
     piface.on(4);
