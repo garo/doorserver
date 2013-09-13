@@ -78,10 +78,11 @@ insert into doorserver_user_to_group values(2, 10, 102);
 
 CREATE TABLE doorserver_doors (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  doorname varchar(50) DEFAULT NULL
+  doorname varchar(50) DEFAULT NULL,
+  timeperiod_id int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-insert into doorserver_doors values(1000, 'Etuovi');
+insert into doorserver_doors values(1000, 'Etuovi', 10000);
 
 CREATE TABLE doorserver_door_to_group (
   id int(11) AUTO_INCREMENT PRIMARY KEY,
