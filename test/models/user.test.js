@@ -7,14 +7,13 @@ describe('user model', function() {
 
     var user = new doorserver.models.User({
       id : "id",
-      token : "token",
-      name : "name"
+      name : "name",
+      enabled : 1
     });
 
     assert.equal(user.id, "id");
     assert.equal(user.name, "name");
-    assert.equal(user.token, "token");
-
+    assert.equal(user.enabled, 1);
   });
 
 });
