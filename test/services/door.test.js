@@ -40,6 +40,7 @@ describe('door service', function () {
       doorserver.services.door.openDoor(1000, function (err) {
         assert.ok(piface_on.called);
         assert.ok(settings_get.called);
+        assert.equal(doorserver.services.door.doorHoldState, doorserver.services.door.DOOR_OPEN);
         piface_on.restore();
         settings_get.restore();
         done();
@@ -71,6 +72,7 @@ describe('door service', function () {
       doorserver.services.door.closeDoor(1000, function (err) {
         assert.ok(piface_off.called);
         assert.ok(settings_get.called);
+        assert.equal(doorserver.services.door.doorHoldState, doorserver.services.door.DOOR_CLOSED);
         piface_off.restore();
         settings_get.restore();
         done();
