@@ -1,7 +1,7 @@
 doorserver
 ==========
 
-Doorserver for Raspberry Pi with RFID support
+Doorserver for Raspberry Pi with RFID support. Allows you to define users with rfid tokens, attach users to groups and attach physical doors to the groups. Then the user can show his RFID token to gain access to a physical door protected by an electrical lock.
 
 Features
 --------
