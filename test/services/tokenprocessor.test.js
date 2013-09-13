@@ -25,12 +25,16 @@ describe('rfid', function () {
         cb(null, new doorserver.models.Door({id : 1000, doorname : "Istiksen Etuovi"}));
       });
 
+      var logAllowedUser = sinon.stub(doorserver.services.tokenProcessor, 'logAllowedUser', function (user, door_id, token_packet, cb) {
+        cb(null); // false means that user is not allowed to open the door
+      });
 
       doorserver.services.tokenProcessor.onTokenRead({token : "mytoken", door_id : 1002}, function () {
         assert.ok(findUserByToken.called);
         assert.ok(openDoorForAMoment.called, "openDoorForAMoment was not called");
         assert.ok(isUserAllowedToOpenDoor.called, "isUserAllowedToOpenDoor was not called");
         assert.equal(opened_door_id, 1002);
+        assert.ok(logAllowedUser.called);
         isUserAllowedToOpenDoor.restore();
         findUserByToken.restore();
         openDoorForAMoment.restore();

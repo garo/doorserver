@@ -10,6 +10,5 @@ describe('mysql', function() {
       assert.ifError(err);
       done();
     });
-
   });
 });
