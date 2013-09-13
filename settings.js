@@ -1,10 +1,18 @@
 var settings = {};
 
 settings.mysql = {
-  host:"localhost",
-  user:"doorserver",
-  password:"doorserver",
-  database:"doorserver_test"
+  data:{
+    host:"localhost",
+    user:"doorserver",
+    password:"doorserver",
+    database:"doorserver_test"
+  },
+  logs:{
+    host:"localhost",
+    user:"doorserver",
+    password:"doorserver",
+    database:"doorserver_test"
+  }
 };
 
 settings.inputdrivers = [
