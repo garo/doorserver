@@ -60,6 +60,62 @@ describe('doorperiod service', function () {
         done();
       });
     });
+
+    it("should open door if shouldDoorBeOpen said yes", function (done) {
+      var ts = new Date();
+
+      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door_id, cb) {
+        cb(null, true, { id : 1, role : "da role", exclude : 0});
+      });
+
+      var openDoor = sinon.stub(doorserver.services.door, "openDoor", function (door_id, cb) {
+        assert.equal(1000, door_id);
+        cb();
+      });
+
+      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door_id, cb) {
+        assert.fail("closeDoor should not be called");
+        cb();
+      });
+
+      doorserver.services.doorperiod.checkSingleDoor(ts, 1000, function (err, shouldBeOpen, because_of_rule) {
+        assert.ok(shouldDoorBeOpen.called);
+        assert.ok(openDoor.called);
+        assert.equal(false, closeDoor.called);
+        shouldDoorBeOpen.restore();
+        openDoor.restore();
+        closeDoor.restore();
+        done();
+      });
+    });
+
+    it("should close door if shouldDoorBeOpen said no", function (done) {
+      var ts = new Date();
+
+      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door_id, cb) {
+        cb(null, false, { id : 1, role : "da role", exclude : 0});
+      });
+
+      var openDoor = sinon.stub(doorserver.services.door, "openDoor", function (door_id, cb) {
+        assert.fail("openDoor should not be called!");
+        cb();
+      });
+
+      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door_id, cb) {
+        assert.equal(1000, door_id);
+        cb();
+      });
+
+      doorserver.services.doorperiod.checkSingleDoor(ts, 1000, function (err, shouldBeOpen, because_of_rule) {
+        assert.ok(shouldDoorBeOpen.called);
+        assert.equal(false, openDoor.called);
+        assert.ok(closeDoor.called);
+        shouldDoorBeOpen.restore();
+        openDoor.restore();
+        closeDoor.restore();
+        done();
+      });
+    });
   });
 
   describe("shouldDoorBeOpened", function () {
