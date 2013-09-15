@@ -1,7 +1,8 @@
 REPORTER = spec
 MYSQL_USER=doorserver
 MYSQL_PASSWORD=doorserver
-MYSQL_DATABADSE=doorserver_test
+MYSQL_DATABASE=doorserver_test
+
 
 ###
 # Testing
@@ -49,6 +50,10 @@ clean-all: clean
 # Test data
 ###
 setup-test-data:
-	@mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) $(MYSQL_DATABASE) < testdata.sql
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "DROP DATABASE IF EXISTS doorserver_test"
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "CREATE DATABASE doorserver_test"
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D $(MYSQL_DATABASE) -B < doorserver.sql
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D $(MYSQL_DATABASE) -B < testdata.sql
+
 
 .PHONY: setup-test-data
