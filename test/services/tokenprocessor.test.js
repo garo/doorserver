@@ -39,6 +39,7 @@ describe('rfid', function () {
         findUserByToken.restore();
         openDoorForAMoment.restore();
         findDoorById.restore();
+        logAllowedUser.restore();
         done();
       });
     });
@@ -76,4 +77,62 @@ describe('rfid', function () {
 
   });
 
+  describe("logDeniedUser", function() {
+    it("should call logRepository.logDeniedUser", function(done) {
+      var logDeniedUser = sinon.stub(doorserver.repositories.logRepository, 'logDeniedUser', function (user_id, door_id, token, reason, cb) {
+        assert.equal(100, user_id);
+        assert.equal(1000, door_id);
+        assert.equal("da token", token);
+        assert.equal("error name", reason);
+        cb();
+      });
+
+      doorserver.services.tokenProcessor.logDeniedUser({id : 100}, 1000, "da token", "error name", function(err) {
+        assert.ifError(err);
+        assert.ok(logDeniedUser.called);
+        logDeniedUser.restore();
+        done();
+      });
+
+    });
+
+    it("should send null as user_id if user was undefined", function(done) {
+      var logDeniedUser = sinon.stub(doorserver.repositories.logRepository, 'logDeniedUser', function (user_id, door_id, token, reason, cb) {
+        assert.equal(null, user_id);
+        assert.equal(1000, door_id);
+        assert.equal("da token", token);
+        assert.equal("error name", reason);
+        cb();
+      });
+
+      doorserver.services.tokenProcessor.logDeniedUser(null, 1000, "da token", "error name", function(err) {
+        assert.ifError(err);
+        assert.ok(logDeniedUser.called);
+        logDeniedUser.restore();
+        done();
+      });
+
+    });
+
+  });
+
+
+  describe("logAllowedUser", function() {
+    it("should call logRepository.logAllowedUser", function(done) {
+      var logAllowedUser = sinon.stub(doorserver.repositories.logRepository, 'logAllowedUser', function (user_id, door_id, token, cb) {
+        assert.equal(100, user_id);
+        assert.equal(1000, door_id);
+        assert.equal("da token", token);
+        cb();
+      });
+
+      doorserver.services.tokenProcessor.logAllowedUser({id : 100}, 1000, "da token",function(err) {
+        assert.ifError(err);
+        assert.ok(logAllowedUser.called);
+        logAllowedUser.restore();
+        done();
+      });
+
+    });
+  });
 });
