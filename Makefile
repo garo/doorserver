@@ -50,11 +50,14 @@ clean-all: clean
 # Test data
 ###
 setup-test-data:
-	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "DROP DATABASE IF EXISTS doorserver_test"
-	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "CREATE DATABASE doorserver_test"
-	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D $(MYSQL_DATABASE) -B < doorserver_data.sql
-	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D $(MYSQL_DATABASE) -B < doorserver_logs.sql
-	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D $(MYSQL_DATABASE) -B < testdata.sql
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "DROP DATABASE IF EXISTS doorserver_test_data"
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "CREATE DATABASE doorserver_test_data"
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "DROP DATABASE IF EXISTS doorserver_test_logs"
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -e "CREATE DATABASE doorserver_test_logs"
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D doorserver_test_data -B < doorserver_data.sql
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D doorserver_test_logs -B < doorserver_logs.sql
+	mysql -u $(MYSQL_USER) --password=$(MYSQL_PASSWORD) -D doorserver_test_data -B < testdata.sql
 
 
 .PHONY: setup-test-data
+

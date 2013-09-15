@@ -5,13 +5,13 @@ settings.mysql = {
     host:"localhost",
     user:"doorserver",
     password:"doorserver",
-    database:"doorserver_data"
+    database:"doorserver_test_data"
   },
   logs:{
     host:"localhost",
     user:"doorserver",
     password:"doorserver",
-    database:"doorserver_logs"
+    database:"doorserver_test_logs"
   }
 };
 
