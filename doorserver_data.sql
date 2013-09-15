@@ -1,6 +1,10 @@
 
 --
--- Test database for the Doorserver project. Contains dummy test data
+-- Test database for the Doorserver project.
+--
+-- The database is split into two parts: "data" and "logs".
+-- The "data" part is a read-only database for the doorserver
+-- and the "logs" is a write-only database for audit logs.
 --
 --
 -- Node that the software is designed so that you can add additional
@@ -85,13 +89,4 @@ CREATE TABLE doorserver_timeperiod_rules (
 );
 
 
-CREATE TABLE doorserver_logs (
-  id int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  ts timestamp,
-  token varchar(50),
-  user_id int(11) DEFAULT NULL,
-  door_id int(11) DEFAULT NULL,
-  event varchar(10) NOT NULL,
-  reason varchar(200) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
