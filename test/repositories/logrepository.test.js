@@ -14,6 +14,7 @@ describe('logrepository', function () {
         handle.query("SELECT * FROM doorserver_logs WHERE user_id = 12 AND door_id = 1000 AND token = 'da token'", function (err, rows) {
           console.log(err);
           assert.ifError(err);
+          assert.equal("allowed", rows[0].event);
           assert.equal(1, rows.length);
           done();
         });
@@ -32,6 +33,7 @@ describe('logrepository', function () {
         handle.query("SELECT * FROM doorserver_logs WHERE user_id = 13 AND door_id = 1001 AND token = 'da token' AND reason = 'invalid entry'", function (err, rows) {
           console.log(err);
           assert.ifError(err);
+          assert.equal("denied", rows[0].event);
           assert.equal(1, rows.length);
           done();
         });

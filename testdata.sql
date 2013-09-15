@@ -121,6 +121,7 @@ CREATE TABLE doorserver_logs (
   token varchar(50),
   user_id int(11) DEFAULT NULL,
   door_id int(11) DEFAULT NULL,
+  event varchar(10) NOT NULL,
   reason varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
