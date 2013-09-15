@@ -42,7 +42,9 @@ describe('security', function() {
 
       doorserver.services.security.reportUserSecurityPass(user, groups);
 
-      assert.equal(msg, "User Garo (100) is allowed to access door \"Front door\" via the following 2 groups: \"Test group\", \"Another group\"");
+      // Strip the timestamp off
+      var str = msg.substring(msg.indexOf(" "));
+      assert.equal(str, " User Garo (100) is allowed to access door \"Front door\" via the following 2 groups: \"Test group\", \"Another group\"");
 
       console_log.restore();
     });
@@ -57,7 +59,11 @@ describe('security', function() {
 
       var user = new doorserver.models.User({id : 100, name : "Garo"});
       doorserver.services.security.reportUserSecurityDenial(user);
-      assert.equal(msg, "Known user Garo (100) tried to access but was denied");
+
+      // Strip the timestamp off
+      var str = msg.substring(msg.indexOf(" "));
+
+      assert.equal(str, " Known user Garo (100) tried to access but was denied");
 
       console_log.restore();
 
