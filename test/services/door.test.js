@@ -198,7 +198,7 @@ describe('door service', function () {
 
     it("should only buzz when door was already open", function (done) {
 
-      doorserver.services.door.doorHoldState = doorserver.services.door.DOOR_OPEN;
+      doorserver.services.door.doorHoldState[1000] = doorserver.services.door.DOOR_OPEN;
 
       var settings_get = sinon.stub(doorserver.settings, 'get', function (key) {
         switch (key) {
