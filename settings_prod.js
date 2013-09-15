@@ -24,7 +24,7 @@ settings.inputdrivers = [
 ];
 
 settings.doors = {
-  "1000":{
+  "1":{
     relay_pin:1,
     buzzer_pin:4,
     door_open_time:20000,
