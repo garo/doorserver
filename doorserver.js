@@ -1,3 +1,4 @@
+#!/opt/node/bin/node
 
 var doorserver = require('./lib/doorserver');
 
