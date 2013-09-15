@@ -115,3 +115,12 @@ INSERT INTO doorserver_timeperiod_rules VALUES(1, 10000, "1-5,08:00-18:00", 0);
 INSERT INTO doorserver_timeperiod_rules VALUES(2, 10000, "6-7,10:00-18:00", 0);
 INSERT INTO doorserver_timeperiod_rules VALUES(3, 10000, "24.12.", 1);
 
+CREATE TABLE doorserver_logs (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  ts timestamp,
+  token varchar(50),
+  user_id int(11) DEFAULT NULL,
+  door_id int(11) DEFAULT NULL,
+  reason varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
