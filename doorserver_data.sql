@@ -31,7 +31,7 @@
 --
 
 create table doorserver_users (
-       id int(11) not null primary key,
+       id int(11) not null AUTO_INCREMENT primary key,
        name varchar(100),
        enabled int(1) default 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -230,7 +230,25 @@ describe('timeperiod', function () {
       assert.equal(false, Timeperiod.check_time_period(ts, "24.12."));
     });
 
+    it("knows that 2013-10-21T21:27:00 (Mon) is NOT between 1-5,09:55-21:05", function () {
+      var ts = new Date("2013-10-21T21:27:00+0300");
+      assert.equal(false, Timeperiod.check_time_period(ts, "1-5,09:55-21:05"));
+    });
 
+    it("knows that 2013-10-21T21:00:00 (Mon) is in between 1-5,09:55-21:05", function () {
+      var ts = new Date("2013-10-21T21:00:00+0300");
+      assert.ok(Timeperiod.check_time_period(ts, "1-5,09:55-21:05"));
+    });
+
+    it("knows that 2013-10-21T09:54:00 (Mon) is NOT between 1-5,09:55-21:05", function () {
+      var ts = new Date("2013-10-21T09:54:00+0300");
+      assert.equal(false, Timeperiod.check_time_period(ts, "1-5,09:55-21:05"));
+    });
+
+    it("knows that 2013-10-22T15:00:00 (Tue) is in between 1-5,09:55-21:05", function () {
+      var ts = new Date("2013-10-22T15:00:00+0300");
+      assert.ok(Timeperiod.check_time_period(ts, "1-5,09:55-21:05"));
+    });
 
   });
 });

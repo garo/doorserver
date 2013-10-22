@@ -27,8 +27,8 @@ settings.doors = {
   "1":{
     relay_pin:1,
     buzzer_pin:4,
-    door_open_time:20000,
-    buzzer_time:5000
+    door_open_time:2000,
+    buzzer_time:2000
   }
 };
 
