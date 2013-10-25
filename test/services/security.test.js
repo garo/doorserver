@@ -1,43 +1,46 @@
-
 var assert = require('assert');
 var sinon = require('sinon');
 
 var doorserver = require('../../lib/doorserver');
 
-describe('security', function() {
+describe('security', function () {
 
-  describe("isUserAllowedToOpenDoor", function() {
+  describe("isUserAllowedToOpenDoor", function () {
     it("should allow to open door if user belongs to a group", function (done) {
 
-      var findAllGroupsForUser = sinon.stub(doorserver.repositories.userRepository, 'findAllGroupsForUserForDoor', function(user_id, door_id, cb) {
-        cb(null, [{groupid : 123, doorid : 456, groupname : "test group", doorname : "test door"}]);
+      var findAllGroupsForUserForDoor = sinon.stub(doorserver.repositories.userRepository, 'findAllGroupsForUserForDoor', function (user_id, door, cb) {
+        assert.equal(1000, door.id);
+        assert.equal("door name", door.doorname);
+        cb(null, [
+          {groupid:123, doorid:456, groupname:"test group", doorname:"door name"}
+        ]);
       });
 
 
-      var door_id = 1000;
-      var user = new doorserver.models.User({id : 100, name : "Garo"});
+      var door = new doorserver.models.Door({id:1000, doorname:"door name"});
+      var user = new doorserver.models.User({id:100, name:"Garo"});
 
-      doorserver.services.security.isUserAllowedToOpenDoor(user, door_id, function (err, isAllowed) {
-        assert.ok(findAllGroupsForUser.called);
+      doorserver.services.security.isUserAllowedToOpenDoor(user, door, function (err, isAllowed) {
+        assert.ok(findAllGroupsForUserForDoor.called);
         assert.ok(isAllowed);
-        findAllGroupsForUser.restore();
+        findAllGroupsForUserForDoor.restore();
         done();
       });
 
     });
   });
 
-  describe("reportUserSecurityPass", function() {
-    it("should report correctly to console.log", function() {
+  describe("reportUserSecurityPass", function () {
+    it("should report correctly to console.log", function () {
       var msg = "";
-      var console_log = sinon.stub(console, 'log', function(message) {
+      var console_log = sinon.stub(console, 'log', function (message) {
         msg = message;
       });
 
-      var user = new doorserver.models.User({id : 100, name : "Garo"});
+      var user = new doorserver.models.User({id:100, name:"Garo"});
       var groups = [
-        { groupid : 10, groupname : "Test group", doorid : 1000, doorname : "Front door"},
-        { groupid : 11, groupname : "Another group", doorid : 1001, doorname : "Front door"}
+        { groupid:10, groupname:"Test group", doorid:1000, doorname:"Front door"},
+        { groupid:11, groupname:"Another group", doorid:1001, doorname:"Front door"}
       ];
 
       doorserver.services.security.reportUserSecurityPass(user, groups);
@@ -50,14 +53,14 @@ describe('security', function() {
     });
   });
 
-  describe("reportUserSecurityDenial", function() {
-    it("should report correctly to console.log", function() {
+  describe("reportUserSecurityDenial", function () {
+    it("should report correctly to console.log", function () {
       var msg = "";
-      var console_log = sinon.stub(console, 'log', function(message) {
+      var console_log = sinon.stub(console, 'log', function (message) {
         msg = message;
       });
 
-      var user = new doorserver.models.User({id : 100, name : "Garo"});
+      var user = new doorserver.models.User({id:100, name:"Garo"});
       doorserver.services.security.reportUserSecurityDenial(user);
 
       // Strip the timestamp off

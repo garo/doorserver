@@ -60,8 +60,11 @@ describe('userrepository', function() {
   describe("findAllGroupsForUserForDoor", function () {
     it("should find allowed door", function (done) {
       var user_id = 100;
-      var door_id = 1000;
-      doorserver.repositories.userRepository.findAllGroupsForUserForDoor(user_id, door_id, function (err, results) {
+      var door = {
+        id : 1000,
+        name : "door name"
+      };
+      doorserver.repositories.userRepository.findAllGroupsForUserForDoor(user_id, door, function (err, results) {
         assert.ifError(err);
         assert.ok(results);
         assert.equal(results[0].groupid, 10);

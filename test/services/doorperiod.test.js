@@ -4,6 +4,50 @@ var doorserver = require('../../lib/doorserver');
 
 describe('doorperiod service', function () {
 
+  describe("init", function() {
+    it("will close all doors", function (done) {
+      var settings_get = sinon.stub(doorserver.settings, 'get', function (key) {
+        switch (key) {
+          case "doors":
+            return {
+              "1000":{
+
+              },
+              "1001":{
+
+              }
+            }
+        }
+      });
+
+      var sequence = [];
+
+      var findDoorById = sinon.stub(doorserver.repositories.doorRepository, "findDoorById", function (door_id, cb) {
+        cb(null, new doorserver.models.Door({id : door_id, doorname : "Door #" + door_id, timeperiod_id : null}));
+      });
+
+      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door, cb) {
+        sequence.push(door.id);
+        cb();
+      });
+
+      var ts = new Date();
+      doorserver.services.doorperiod.init(function (err) {
+        assert.ifError(err);
+
+        // The iteration pattern starts from end, so first call should be to last entry in settings
+        assert.equal(1001, sequence[0]);
+        assert.equal(1000, sequence[1]);
+        assert.ok(findDoorById.called); // Should be called two times, but not sure how to test it :(
+        closeDoor.restore();
+        settings_get.restore();
+        findDoorById.restore();
+        done();
+      });
+
+    });
+  });
+
   describe("checkAllDoors", function () {
     it("will check each door", function (done) {
       var settings_get = sinon.stub(doorserver.settings, 'get', function (key) {
@@ -22,8 +66,12 @@ describe('doorperiod service', function () {
 
       var sequence = [];
 
-      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (ts, door_id, cb) {
-        sequence.push([ts, door_id]);
+      var findDoorById = sinon.stub(doorserver.repositories.doorRepository, "findDoorById", function (door_id, cb) {
+        cb(null, new doorserver.models.Door({id : door_id, doorname : "Door #" + door_id, timeperiod_id : null}));
+      });
+
+      var checkSingleDoor = sinon.stub(doorserver.services.doorperiod, "checkSingleDoor", function (ts, door, cb) {
+        sequence.push([ts, door.id]);
         cb();
       });
 
@@ -36,8 +84,9 @@ describe('doorperiod service', function () {
         assert.equal(1001, sequence[0][1]);
         assert.equal(ts, sequence[1][0]);
         assert.equal(1000, sequence[1][1]);
-        shouldDoorBeOpen.restore();
+        checkSingleDoor.restore();
         settings_get.restore();
+        findDoorById.restore();
         done();
       });
     });
@@ -47,14 +96,15 @@ describe('doorperiod service', function () {
     it("should call shouldDoorBeOpen", function (done) {
       var ts = new Date();
 
-      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door_id, cb) {
-        assert.equal(1000, door_id);
+      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door, cb) {
+        assert.equal(1000, door.id);
         assert.equal(ts, _ts);
         cb(null, true, { id : 1, role : "da role", exclude : 0});
       });
 
-      doorserver.services.doorperiod.checkSingleDoor(ts, 1000, function (err, shouldBeOpen, because_of_rule) {
-
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
+      doorserver.services.doorperiod.checkSingleDoor(ts, door, function (err, shouldBeOpen, because_of_rule) {
+        assert.ifError(err);
         assert.ok(shouldDoorBeOpen.called);
         shouldDoorBeOpen.restore();
         done();
@@ -64,21 +114,24 @@ describe('doorperiod service', function () {
     it("should open door if shouldDoorBeOpen said yes", function (done) {
       var ts = new Date();
 
-      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door_id, cb) {
+      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door, cb) {
+        assert.equal(1000, door.id);
         cb(null, true, { id : 1, role : "da role", exclude : 0});
       });
 
-      var openDoor = sinon.stub(doorserver.services.door, "openDoor", function (door_id, cb) {
-        assert.equal(1000, door_id);
+      var openDoor = sinon.stub(doorserver.services.door, "openDoor", function (door, cb) {
+        assert.equal(1000, door.id);
         cb();
       });
 
-      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door_id, cb) {
+      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door, cb) {
         assert.fail("closeDoor should not be called");
         cb();
       });
 
-      doorserver.services.doorperiod.checkSingleDoor(ts, 1000, function (err, shouldBeOpen, because_of_rule) {
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
+
+      doorserver.services.doorperiod.checkSingleDoor(ts, door, function (err, shouldBeOpen, because_of_rule) {
         assert.ok(shouldDoorBeOpen.called);
         assert.ok(openDoor.called);
         assert.equal(false, closeDoor.called);
@@ -92,21 +145,24 @@ describe('doorperiod service', function () {
     it("should close door if shouldDoorBeOpen said no", function (done) {
       var ts = new Date();
 
-      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door_id, cb) {
+      var shouldDoorBeOpen = sinon.stub(doorserver.services.doorperiod, "shouldDoorBeOpen", function (_ts, door, cb) {
+        assert.equal(1000, door.id);
         cb(null, false, { id : 1, role : "da role", exclude : 0});
       });
 
-      var openDoor = sinon.stub(doorserver.services.door, "openDoor", function (door_id, cb) {
+      var openDoor = sinon.stub(doorserver.services.door, "openDoor", function (door, cb) {
         assert.fail("openDoor should not be called!");
         cb();
       });
 
-      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door_id, cb) {
-        assert.equal(1000, door_id);
+      var closeDoor = sinon.stub(doorserver.services.door, "closeDoor", function (door, cb) {
+        assert.equal(1000, door.id);
         cb();
       });
 
-      doorserver.services.doorperiod.checkSingleDoor(ts, 1000, function (err, shouldBeOpen, because_of_rule) {
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
+
+      doorserver.services.doorperiod.checkSingleDoor(ts, door, function (err, shouldBeOpen, because_of_rule) {
         assert.ok(shouldDoorBeOpen.called);
         assert.equal(false, openDoor.called);
         assert.ok(closeDoor.called);
@@ -124,20 +180,11 @@ describe('doorperiod service', function () {
       var evaluated_called = false;
       var ts = new Date("2012-10-20");
 
-      var findDoorById = sinon.stub(doorserver.repositories.doorRepository, "findDoorById", function (door_id, cb) {
-        var data = {
-          id:1000,
-          name:"Front door"
-        };
-        cb(null, new doorserver.models.Door(data));
-      });
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
 
-
-      doorserver.services.doorperiod.shouldDoorBeOpen(ts, 1000, function (err, shouldBeOpen) {
+      doorserver.services.doorperiod.shouldDoorBeOpen(ts, door, function (err, shouldBeOpen) {
         assert.ifError(err);
         assert.equal(false, shouldBeOpen);
-        assert.ok(findDoorById.called);
-        findDoorById.restore();
         done();
       });
 
@@ -147,25 +194,16 @@ describe('doorperiod service', function () {
 
       var ts = new Date("2012-10-20");
 
-      var findDoorById = sinon.stub(doorserver.repositories.doorRepository, "findDoorById", function (door_id, cb) {
-        var data = {
-          id:1000,
-          name:"Front door",
-          timeperiod_id:10000
-        };
-        cb(null, new doorserver.models.Door(data));
-      });
-
       var evaluateTimeperiod = sinon.stub(doorserver.services.timeperiod, "evaluateTimeperiod", function (ts, timeperiod_id, cb) {
         cb(null, true, { id:1, rule:"1-5,08:00-18:00", exclude:0});
       });
 
-      doorserver.services.doorperiod.shouldDoorBeOpen(ts, 1000, function (err, shouldBeOpen) {
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door", timeperiod_id : 10000});
+
+      doorserver.services.doorperiod.shouldDoorBeOpen(ts, door, function (err, shouldBeOpen) {
         assert.ifError(err);
         assert.ok(shouldBeOpen);
-        assert.ok(findDoorById.called);
         assert.ok(evaluateTimeperiod.called);
-        findDoorById.restore();
         evaluateTimeperiod.restore();
         done();
       });
@@ -175,25 +213,16 @@ describe('doorperiod service', function () {
 
       var ts = new Date("2012-10-20");
 
-      var findDoorById = sinon.stub(doorserver.repositories.doorRepository, "findDoorById", function (door_id, cb) {
-        var data = {
-          id:1000,
-          name:"Front door",
-          timeperiod_id:10000
-        };
-        cb(null, new doorserver.models.Door(data));
-      });
-
       var evaluateTimeperiod = sinon.stub(doorserver.services.timeperiod, "evaluateTimeperiod", function (ts, timeperiod_id, cb) {
         cb(null, false, { id:1, rule:"1-5,08:00-18:00", exclude:0});
       });
 
-      doorserver.services.doorperiod.shouldDoorBeOpen(ts, 1000, function (err, shouldBeOpen) {
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door", timeperiod_id : 10000});
+
+      doorserver.services.doorperiod.shouldDoorBeOpen(ts, door, function (err, shouldBeOpen) {
         assert.ifError(err);
         assert.equal(false, shouldBeOpen);
-        assert.ok(findDoorById.called);
         assert.ok(evaluateTimeperiod.called);
-        findDoorById.restore();
         evaluateTimeperiod.restore();
         done();
       });

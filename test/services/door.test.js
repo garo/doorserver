@@ -4,19 +4,22 @@ var doorserver = require('../../lib/doorserver');
 
 describe('door service', function () {
 
-  describe("isDoorOpen", function() {
+  describe("o", function() {
     it("should return true if doorHoldState is DOOR_OPEN per door", function() {
+      var door = new doorserver.models.Door({id : 1000, doorname : "test door"});
       doorserver.services.door.doorHoldState[1000] = doorserver.services.door.DOOR_OPEN;
-      assert.equal(true, doorserver.services.door.isDoorOpen(1000));
+      assert.equal(true, doorserver.services.door.isDoorOpen(door));
     });
 
     it("should return false if doorHoldState is DOOR_CLOSED per door", function() {
+      var door = new doorserver.models.Door({id : 1000, doorname : "test door"});
       doorserver.services.door.doorHoldState[1000] = doorserver.services.door.DOOR_CLOSED;
-      assert.equal(false, doorserver.services.door.isDoorOpen(1000));
+      assert.equal(false, doorserver.services.door.isDoorOpen(door));
     });
 
     it("should return false for unknown door", function() {
-      assert.equal(false, doorserver.services.door.isDoorOpen(1002));
+      var door = new doorserver.models.Door({id : 1002, doorname : "test door"});
+      assert.equal(false, doorserver.services.door.isDoorOpen(door));
     });
 
   });
@@ -33,8 +36,7 @@ describe('door service', function () {
                 door_open_time:200,
                 buzzer_time:50
               }
-
-            }
+            };
         }
       });
 
@@ -42,7 +44,10 @@ describe('door service', function () {
         assert.equal(1, pin);
       });
 
-      doorserver.services.door.openDoor(1000, function (err) {
+      var door = new doorserver.models.Door({id : 1000, doorname : "test door"});
+
+      doorserver.services.door.openDoor(door, function (err) {
+        assert.ifError(err);
         assert.ok(piface_on.called);
         assert.ok(settings_get.called);
         assert.equal(doorserver.services.door.doorHoldState[1000], doorserver.services.door.DOOR_OPEN);
@@ -74,7 +79,10 @@ describe('door service', function () {
         assert.equal(1, pin);
       });
 
-      doorserver.services.door.closeDoor(1000, function (err) {
+      var door = new doorserver.models.Door({id : 1000, doorname : "test door"});
+
+
+      doorserver.services.door.closeDoor(door, function (err) {
         assert.ok(piface_off.called);
         assert.ok(settings_get.called);
         assert.equal(doorserver.services.door.doorHoldState[1000], doorserver.services.door.DOOR_CLOSED);
@@ -147,15 +155,14 @@ describe('door service', function () {
         });
       });
 
-      var door_id = 1000;
-
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
 
       var piface_on = sinon.stub(doorserver.drivers.piface, 'on', function (pin) {
         sequence.push(["on", pin]);
 
         // Door should now be marked as temporarily open
         if (pin === 1) {
-          assert.ok(doorserver.services.door.doorTemporarilyOpen[door_id]);
+          assert.ok(doorserver.services.door.doorTemporarilyOpen[1000]);
         }
       });
 
@@ -164,12 +171,12 @@ describe('door service', function () {
 
         // Door should no longer be marked as temporarily open
         if (pin === 1) {
-          assert.equal(doorserver.services.door.doorTemporarilyOpen[door_id], undefined);
+          assert.equal(doorserver.services.door.doorTemporarilyOpen[1000], undefined);
         }
 
       });
 
-      doorserver.services.door.openDoorForAMoment(door_id);
+      doorserver.services.door.openDoorForAMoment(door);
 
       setTimeout(function() {
         //console.log(sequence);
@@ -179,7 +186,6 @@ describe('door service', function () {
         // in the delay order. They are simply postponed until last tick.
         // Thus the sequential event order might change if a big refactor
         // is done.
-
         assert.deepEqual(sequence[0], ["on", 1]); // First turn relay pin on
         assert.deepEqual(sequence[1], ["on", 4]); // Then turn buzzer pin on
         assert.deepEqual(sequence[2], ["delay", 200]); // Schedule door close delay
@@ -234,8 +240,8 @@ describe('door service', function () {
         sequence.push(["off", pin]);
       });
 
-      var door_id = 1000;
-      doorserver.services.door.openDoorForAMoment(door_id);
+      var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
+      doorserver.services.door.openDoorForAMoment(door);
 
       setTimeout(function() {
 

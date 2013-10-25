@@ -15,6 +15,7 @@ settings.mysql = {
   }
 };
 
+
 settings.inputdrivers = [
   {
     driver:"usbkeyboard",
@@ -22,6 +23,7 @@ settings.inputdrivers = [
     door_id:1000
   }
 ];
+
 
 settings.doors = {
   "1000":{
