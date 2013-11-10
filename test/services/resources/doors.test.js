@@ -30,34 +30,33 @@ describe('resource:doors', function () {
 
       var req = {};
       var res = {
-        jsonp:function (data) {
+        send:function (data) {
           console.log("ASDF", data);
           var expect = {
             doors:[
               {
                 id:1001,
                 doorname:"Door #1001",
-                timeperiod_id : null
+                timeperiod_id:null
               },
               {
                 id:1000,
                 doorname:"Door #1000",
-                timeperiod_id : null
+                timeperiod_id:null
               }
             ]
           };
           assert.deepEqual(expect, data);
+
+          assert.ok(findDoorById.called);
+          findDoorById.restore();
+          settings_get.restore();
+          done();
+
         }
       };
 
-      doorserver.services.resources.doors.index(req, res, function next(err) {
-        assert.ifError(err);
-        assert.ok(findDoorById.called);
-        findDoorById.restore();
-        settings_get.restore();
-        done();
-      });
-
+      doorserver.services.resources.doors.index(req, res);
 
     });
 
