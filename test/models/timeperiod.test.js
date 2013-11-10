@@ -250,6 +250,17 @@ describe('timeperiod', function () {
       assert.ok(Timeperiod.check_time_period(ts, "1-5,09:55-21:05"));
     });
 
+    it("knows that 2013-11-10T14:46:54.629Z (Sun) is in between 6-7,11:45-18:05", function () {
+      var ts = new Date("2013-11-10T14:46:54.629Z");
+      assert.ok(Timeperiod.check_time_period(ts, "6-7,11:45-18:05"));
+    });
+
+    it("knows that 2013-11-10T18:46:54.629Z (Sun) is NOT in between 6-7,11:45-18:05", function () {
+      var ts = new Date("2013-11-10T18:46:54.629Z");
+      assert.equal(false, Timeperiod.check_time_period(ts, "6-7,11:45-18:05"));
+    });
+
+
   });
 });
 
