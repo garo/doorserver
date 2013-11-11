@@ -27,6 +27,30 @@ describe('usbdriver', function() {
       token : "the token",
       door_id : 1000
     });
-  })
+  });
+
+  describe("convertHexInput", function() {
+    it("should convert correctly when no padding is needed", function() {
+      var driver = new doorserver.drivers.usbkeyboard({
+        door_id : 1000,
+        type : "hexinput"
+      });
+
+      assert.equal("13958495", driver.convertHexInput("00D4FD5F"));
+
+    });
+
+    it("should convert correctly when padding is needed", function() {
+      var driver = new doorserver.drivers.usbkeyboard({
+        door_id : 1000,
+        type : "hexinput"
+      });
+
+      assert.equal("00064863", driver.convertHexInput("0000FD5F"));
+      assert.equal("00064863", driver.convertHexInput("FD5F"));
+
+    });
+
+  });
 
 });
