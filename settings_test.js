@@ -15,6 +15,13 @@ settings.mysql = {
   }
 };
 
+/**
+ * This feature maps all unknown users to some pre-defined user.
+ * After this all normal user privilege features work, such as
+ * this unknown user can belong to a group which allows him to open
+ * a specific door.
+*/
+// settings.unknownuserid = 12345;
 
 settings.inputdrivers = [
   {
