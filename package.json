@@ -6,7 +6,9 @@
   "dependencies":{
     "mysql":"0.9.x",
     "async":"0.2.x",
-    "moment":"2.2.x"
+    "moment":"2.2.x",
+    "express":"3.4.x",
+    "express-resource":"1.0.x"
   },
   "optionalDepencies":{
     "simplespi":"0.0.x"
