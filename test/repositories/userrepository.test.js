@@ -48,6 +48,30 @@ describe('userrepository', function() {
       });
     });
 
+    it("should return special User object if user was not found and settings.unknownuserid was set", function (done) {
+      var settingsGet = sinon.stub(doorserver.settings, "get", function (key) {
+        assert.equal("unknownuserid", key);
+        return 123456789;
+      });
+
+      var findUserById = sinon.stub(doorserver.repositories.userRepository, "findUserById", function (id, cb) {
+        assert.equal(123456789, id);
+        cb(null, new doorserver.models.User({id : id, name : "<unknown user>", enabled : 1}));
+      });
+
+
+      doorserver.repositories.userRepository.findUserByToken("notfound", function (err, user) {
+        console.log("user", user);
+        assert.ifError(err);
+        assert.equal(123456789, user.id);
+        assert.ok(settingsGet.called);
+        assert.ok(findUserById.called);
+        settingsGet.restore();
+        findUserById.restore();
+        done();
+      });
+    });
+
     it("should return null if token was disabled", function (done) {
       doorserver.repositories.userRepository.findUserByToken("disabled_token", function (err, user) {
         assert.ifError(err);
