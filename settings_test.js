@@ -1,5 +1,10 @@
 var settings = {};
 
+// This opens a cruel restful http api which contains a backdoor for opening any
+// door with a simple http request. This is no means yet fully done and it's subject
+// to heavy changes in the future.
+settings.restful_backdoor = true;
+
 settings.mysql = {
   data:{
     host:"localhost",
