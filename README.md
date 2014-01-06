@@ -75,3 +75,9 @@ Internal code structure
  - Repositories encapsulate all access to underlying database.
  - Drivers encapsulate all access to underlying physical hardware.
 
+Changelog
+---------
+
+ * 1.0.4
+  * Added new high priority rule with format "dd.mm.yyyy,HH:MM-HH:MM"
+  * Added very simple http api which contains a backdoor for opening any door without password. Not enabled by default. Use with care. The API is subject to changes in the future.
