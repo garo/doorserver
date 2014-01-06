@@ -48,14 +48,17 @@ Each rule in a Time Period is defined with a simple text format, which has the f
  
  4) "24.12.-25.12." means the days 24th and 25th of December.
 
+ 5) "31.12.2014,12:00-18:00" is a high priority rule and in this example it means the new year eve on the year 2014, between 12:00 and 18:00. High priority rules are used to override other rules so that you can keep the door open on a different schedule in special days
+
 So you could define these two rules: "1-5,08:00-17:00" and "6-7,09:00-16:00" which means that the door will be open from 08:00 to 17:00 from Monday to Friday and then from
 09:00 to 16:00 from Saturday to Sunday.
 
 Each rule can also be defined to be an excluding rule (a separated bit in the database table). You could add excluding rule "24.12." to the previous example and the door would be closed on the x-mas eve.
 
 So the rules are then evaluated in this order
- 1) First iterate thru the inclusing rules and if one of these match, then the door will be open.
- 2) Unless one of the excluding rules matches, then the door will be closed even if one of the including rules matched.
+ 1) First iterate thru all high priority rules (type 5). If one matches then the door will be open.
+ 2) Then iterate thru the inclusing rules and if one of these match, then the door will be open.
+ 3) Unless one of the excluding rules matches, then the door will be closed even if one of the including rules from phase (2) matched.
 
 
 Known limitations
