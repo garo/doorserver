@@ -284,8 +284,6 @@ describe('timeperiod', function () {
   describe("evaluate", function() {
     describe("time validation against rules with special day inclusion", function() {
 
-      var tz = getCurrentTimezone();
-      tz = "Z";
       var data = {
         id:123,
         name:"Business hours"
