@@ -73,4 +73,17 @@ describe('rfid', function () {
     });
   });
 
+  describe("onTokenRead when server does not respond", function () {
+    it("Checks token via http", function (done) {
+      var openDoorForAMoment = sinon.stub(doorserver.services.door, 'openDoorForAMoment', function (door) {
+      });
+
+      doorserver.services.gameMachineTokenProcessor.onTokenRead({token:"mytoken", door_id:1002}, function () {
+        assert.equal(false, openDoorForAMoment.called);
+        openDoorForAMoment.restore();
+        done();
+      });
+    });
+  });
+
 });
