@@ -38,6 +38,10 @@ settings.inputdrivers = [
 
 settings.tokenProcessor = require('./lib/services/securitydoortokenprocessor');
 
+settings.gameMachineTokenProcessor = {
+  url : "http://localhost:8312/tokentest?token="
+};
+
 settings.doors = {
   "1000":{
     relay_pin:1,

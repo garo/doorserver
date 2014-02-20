@@ -8,7 +8,8 @@
     "async":"0.2.x",
     "moment":"2.2.x",
     "express":"3.4.x",
-    "express-resource":"1.0.x"
+    "express-resource":"1.0.x",
+    "request":"2.34.x"
   },
   "optionalDepencies":{
     "simplespi":"0.0.x"
