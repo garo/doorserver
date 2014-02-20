@@ -36,6 +36,7 @@ settings.inputdrivers = [
   }
 ];
 
+settings.tokenProcessor = require('./lib/services/securitydoortokenprocessor');
 
 settings.doors = {
   "1000":{

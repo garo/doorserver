@@ -26,11 +26,11 @@ describe('rfid', function () {
         cb(null, new doorserver.models.Door({id : 1002, doorname : "Front door"}));
       });
 
-      var logAllowedUser = sinon.stub(doorserver.services.tokenProcessor, 'logAllowedUser', function (user, door_id, token_packet, cb) {
+      var logAllowedUser = sinon.stub(doorserver.services.securityDoorTokenProcessor, 'logAllowedUser', function (user, door_id, token_packet, cb) {
         cb(null); // false means that user is not allowed to open the door
       });
 
-      doorserver.services.tokenProcessor.onTokenRead({token : "mytoken", door_id : 1002}, function () {
+      doorserver.services.securityDoorTokenProcessor.onTokenRead({token : "mytoken", door_id : 1002}, function () {
         assert.ok(findDoorById.called);
         assert.ok(findUserByToken.called);
         assert.ok(openDoorForAMoment.called, "openDoorForAMoment was not called");
@@ -64,13 +64,13 @@ describe('rfid', function () {
         cb(null, false); // false means that user is not allowed to open the door
       });
 
-      var logDeniedUser = sinon.stub(doorserver.services.tokenProcessor, 'logDeniedUser', function (user, door, token_packet, reason, cb) {
+      var logDeniedUser = sinon.stub(doorserver.services.securityDoorTokenProcessor, 'logDeniedUser', function (user, door, token_packet, reason, cb) {
         assert.equal(door.id, 1002);
         assert.equal(door.doorname, "front door");
         cb(null); // false means that user is not allowed to open the door
       });
 
-      doorserver.services.tokenProcessor.onTokenRead({token : "mytoken", door_id : 1002}, function () {
+      doorserver.services.securityDoorTokenProcessor.onTokenRead({token : "mytoken", door_id : 1002}, function () {
         assert.ok(findUserByToken.called);
         assert.equal(false, openDoorForAMoment.called, "openDoorForAMoment was called, but user was not allowed");
         assert.ok(isUserAllowedToOpenDoor.called, "isUserAllowedToOpenDoor was not called");
@@ -98,7 +98,7 @@ describe('rfid', function () {
 
       var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
       var user = new doorserver.models.User({id : 100, name : "Mr Smith"});
-      doorserver.services.tokenProcessor.logDeniedUser(user, door, "da token", "error name", function(err) {
+      doorserver.services.securityDoorTokenProcessor.logDeniedUser(user, door, "da token", "error name", function(err) {
         assert.ifError(err);
         assert.ok(logDeniedUser.called);
         logDeniedUser.restore();
@@ -117,7 +117,7 @@ describe('rfid', function () {
       });
 
       var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
-      doorserver.services.tokenProcessor.logDeniedUser(null, door, "da token", "error name", function(err) {
+      doorserver.services.securityDoorTokenProcessor.logDeniedUser(null, door, "da token", "error name", function(err) {
         assert.ifError(err);
         assert.ok(logDeniedUser.called);
         logDeniedUser.restore();
@@ -140,7 +140,7 @@ describe('rfid', function () {
 
       var door = new doorserver.models.Door({id : 1000, doorname : "front door"});
       var user = new doorserver.models.User({id : 100, name : "Mr Smith"});
-      doorserver.services.tokenProcessor.logAllowedUser(user, door, "da token",function(err) {
+      doorserver.services.securityDoorTokenProcessor.logAllowedUser(user, door, "da token",function(err) {
         assert.ifError(err);
         assert.ok(logAllowedUser.called);
         logAllowedUser.restore();

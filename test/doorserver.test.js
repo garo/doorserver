@@ -74,7 +74,7 @@ describe("doorserver", function() {
       };
 
       var usbkeyboard = sinon.stub(doorserver.drivers, 'usbkeyboard', driver);
-      var tokenProcessor = sinon.stub(doorserver.services.tokenProcessor, 'onTokenRead', function (token, cb) {
+      var tokenProcessor = sinon.stub(doorserver.services.securityDoorTokenProcessor, 'onTokenRead', function (token, cb) {
         tokenProcessor.restore();
         cb();
         done();
