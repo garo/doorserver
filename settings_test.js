@@ -42,6 +42,10 @@ settings.gameMachineTokenProcessor = {
   url : "http://localhost:8312/tokentest?token="
 };
 
+exports.doorperiod = {
+  enabled : true
+};
+
 settings.doors = {
   "1000":{
     relay_pin:1,

@@ -10,7 +10,7 @@ describe('rfid', function () {
     before(function (done) {
       instance = http.createServer(
           function (request, response) {
-            response.end(JSON.stringify({results: true, msg : "token granted"}));
+            response.end(JSON.stringify({result: true, msg : "token granted"}));
           }).listen(8312);
       instance.on("listening", function () {
         done();
@@ -46,7 +46,7 @@ describe('rfid', function () {
     before(function (done) {
       instance = http.createServer(
           function (request, response) {
-            response.end(JSON.stringify({results: false, msg : "token granted"}));
+            response.end(JSON.stringify({result: false, msg : "token granted"}));
           }).listen(8312);
       instance.on("listening", function () {
         done();
