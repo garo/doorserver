@@ -42,7 +42,7 @@ settings.gameMachineTokenProcessor = {
   url : "http://localhost:8312/tokentest?token="
 };
 
-exports.doorperiod = {
+settings.doorperiod = {
   enabled : true
 };
 
