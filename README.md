@@ -10,8 +10,8 @@ Features
  - Supports time periods which can be attached into doors, so the system will keep your door open on your business hours.
  - Database schema is extendable with additional fields (the sever does not care if there are additional columns in the tables).
  - Supports USB attached RFID token readers (more drivers can be coded easily).
- - Supports PiFace attached electronic door locks and sound buzzers to indicate that the door is open.
- - Easily extendable for other hardware peripherals.
+ - Supports PiFace attached electronic door locks and sound buzzers to indicate that the door is open. (http://www.piface.org.uk/products/piface_digital/)
+ - Easily extendable for other hardware peripherals (see https://github.com/garo/doorserver/blob/master/lib/drivers/piface.js).
  - Supports multiple doors and rfid readers on a single Raspberry Pi.
  - Database can be shared between multiple Raspberry Pi instances (you could use mysql async replication).
 
@@ -66,6 +66,7 @@ Known limitations
 
  - Doesn't currently have any user interface. It only reads data from mysql database and it's up to the user to figure out how to add user, user groups, authentication tokens etc to the database.
  - Currently doesn't support any kind of authenticated/encrypted rfid tokens, so copying rfid tokens with appropriate hardware is possible.
+ - There isn't any support for validating time periods. If user enters an invalid time period then he might not realise that it will not work.
 
 Internal code structure
 -----------------------
